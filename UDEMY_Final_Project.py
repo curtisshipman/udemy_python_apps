@@ -8,16 +8,25 @@ import fileinput
 import operator
 import sys
 
+##########################################
+'''
 
+this needs to be handled.  it breaks if you pass a bad file name at the command line.
+
+'''
 def get_file():
     # Gets the file to be parsed
     if len(sys.argv) > 1:
-        fileName = sys.argv[1]
-        openFile = open(fileName,  "r", encoding="utf8")
-        openFile1 = openFile.read()
-        fileName = os.path.basename(fileName)
-        (fileName, ext) = os.path.splitext(fileName)
-        openFile.close
+        try:
+            fileName = sys.argv[1]
+            openFile = open(fileName,  "r", encoding="utf8")
+            openFile1 = openFile.read()
+            fileName = os.path.basename(fileName)
+            (fileName, ext) = os.path.splitext(fileName)
+            openFile.close
+        except FileNotFoundError:
+            print("That file does not exist.  Please use a valid file name.")
+            return
     else:
         x = False
         while x == False:
@@ -100,6 +109,6 @@ def main():
     print("Your new file location is {}.\nHave a nice day!".format(os.getcwd()))
     print("{}-output.txt".format(fileName))
     print("Your new file location is {}\{}-output.txt".format(os.getcwd(), fileName))
-    
+
 if __name__ == "__main__":
     main()
