@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-# Import needed modules globally
 
+# Import needed modules globally
+# Define global variables, if any.
 import os
 import re
 import time
@@ -8,30 +9,13 @@ import fileinput
 import operator
 import sys
 
-##########################################
-'''
-
-this needs to be handled.  it breaks if you pass a bad file name at the command line.
-
-'''
 def get_file():
     # Gets the file to be parsed
-    if len(sys.argv) > 1:
-        try:
-            fileName = sys.argv[1]
-            openFile = open(fileName,  "r", encoding="utf8")
-            openFile1 = openFile.read()
-            fileName = os.path.basename(fileName)
-            (fileName, ext) = os.path.splitext(fileName)
-            openFile.close
-        except FileNotFoundError:
-            print("That file does not exist.  Please use a valid file name.")
-            return
-    else:
+    if len(sys.argv) < 2:
         x = False
         while x == False:
             try:
-                fileName = input("What file shall we parse?\nPlease enter filename, including extension: ")
+                fileName = input("\nWhat file shall we parse?\nPlease enter filename, including extension: ")
                 openFile = open(fileName,  "r", encoding="utf8")
                 openFile1 = openFile.read()
                 fileName = os.path.basename(fileName)
@@ -39,8 +23,32 @@ def get_file():
                 openFile.close
                 x = True
             except FileNotFoundError:
-                print("Please use a valid file name.")
+                print("\nPlease use a valid file name.")
                 x = False
+    else:
+        x = False
+        while x == False:
+            try:
+                fileName = sys.argv[1]
+                openFile = open(fileName,  "r", encoding="utf8")
+                openFile1 = openFile.read()
+                fileName = os.path.basename(fileName)
+                (fileName, ext) = os.path.splitext(fileName)
+                openFile.close
+                x = True
+            except FileNotFoundError:
+                print("\nThat file does not exist.  Please use a valid file name.")
+                try:
+                    fileName = input("\nPlease enter filename, including extension: ")
+                    openFile = open(fileName,  "r", encoding="utf8")
+                    openFile1 = openFile.read()
+                    fileName = os.path.basename(fileName)
+                    (fileName, ext) = os.path.splitext(fileName)
+                    openFile.close
+                    x = True
+                except FileNotFoundError:
+                    print("\nPlease use a valid file name.")
+                    x = False
     return openFile1, fileName
 
 def fake_processing():
@@ -88,7 +96,7 @@ def remove_character(openFile1):
 def make_output_file(inputFile, dictFile1, fileName):
     # Generates the output file
     outFile = open("{}-output.txt".format(fileName), "w", encoding="utf8")
-    outFile.write("Total Words  -  {}\nUnique Words  -  {}\n\n".format(len(inputFile.split()), len(dictFile1)))
+    outFile.write("\nTotal Words  -  {}\nUnique Words  -  {}\n\n".format(len(inputFile.split()), len(dictFile1)))
     sorted_dictFile1 = sorted(dictFile1.items(), key=operator.itemgetter(1), reverse=True)
     for wordinfo in sorted_dictFile1:
         outFile.write("{}  -  {}\n".format(wordinfo[0], wordinfo[1]))
@@ -105,10 +113,8 @@ def main():
     dictFile1 = make_dict(filteredFile)
     make_output_file(noSymbolsFile, dictFile1, fileName)
     #fake_processing()
-    print("Your new file has been generated.\n")
-    print("Your new file location is {}.\nHave a nice day!".format(os.getcwd()))
-    print("{}-output.txt".format(fileName))
+    print("\nYour new file has been generated.")
     print("Your new file location is {}\{}-output.txt".format(os.getcwd(), fileName))
-
+    print("\nHave a nice day!")
 if __name__ == "__main__":
     main()
